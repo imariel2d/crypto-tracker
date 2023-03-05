@@ -9,7 +9,7 @@ import { CurrenciesList } from './components/currencies-list';
 import { useCurrencies  } from './hooks/useCurrencies';
 
 function App() {
-  const { currencies, refetch } = useCurrencies();
+  const { currencies, refetch, isInitialLoading } = useCurrencies();
   const [trackerCurrencies, setTrackedCurrencies] = useState(new Map());
 
   const updateLocalStorage = (updatedTrackedCurrencies) => {
@@ -71,6 +71,7 @@ function App() {
         onTrackClick={onTrackClick}
         onUntrackClick={onUntrackClick}
         isUsersList={true}
+        isInitialLoading={isInitialLoading}
         currencies={updatedTrackedCurrencies}
       />
       <Typography variant="h6" component="h2">
@@ -80,6 +81,7 @@ function App() {
         onTrackClick={onTrackClick}
         onUntrackClick={onUntrackClick}
         isUsersList={false}
+        isInitialLoading={isInitialLoading}
         currencies={updatedCurrencies}
       />
     </Box>

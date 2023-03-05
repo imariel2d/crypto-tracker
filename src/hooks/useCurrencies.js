@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 
 export const useCurrencies = () => {
+  const [isInitialLoading, setIsInitialLoading] = useState(false);
   const [currencies, setCurrencies] = useState([]);
 
   const fetchData = () => {
@@ -11,6 +12,9 @@ export const useCurrencies = () => {
       })
       .catch(err => {
         console.log(err)
+      })
+      .finally(() => {
+        setIsInitialLoading(false);
       });
   };
 
@@ -19,8 +23,9 @@ export const useCurrencies = () => {
   }
 
   useEffect(() => {
+    setIsInitialLoading(true);
     fetchData();
   }, []);
 
-  return { currencies, refetch };
+  return { currencies, refetch, isInitialLoading };
 };

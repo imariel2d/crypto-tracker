@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -8,19 +8,15 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
+import Skeleton from '@mui/material/Skeleton';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 
-
 import { images } from '../../helpers/image-finder';
+import { formatter } from '../../helpers/money-formatter';
 
-const formatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-});
-
-export const CurrenciesList = ({ isUsersList = false, currencies, onTrackClick, onUntrackClick }) => {
+export const CurrenciesList = ({ isUsersList = false, currencies = [], onTrackClick, onUntrackClick, isInitialLoading }) => {
   const action = isUsersList
     ? onUntrackClick
     : onTrackClick;
@@ -29,11 +25,23 @@ export const CurrenciesList = ({ isUsersList = false, currencies, onTrackClick, 
     ? DeleteIcon
     : AddIcon;
 
+  if (isInitialLoading) {
+    return (
+      <Stack sx={{ marginBottom: 2, gap: 2 }}>
+        <Skeleton variant="rectangular" width="100%" height={80} />
+        <Skeleton variant="rectangular" width="100%" height={80} />
+        <Skeleton variant="rectangular" width="100%" height={80} />
+        <Skeleton variant="rectangular" width="100%" height={80} />
+      </Stack>
+    );
+  }
+
   if (currencies.length === 0) {
     return (
       <Typography sx={{ marginBottom: 2 }}>No currencies to show</Typography>
     )
   }
+
 
   return (
     <List sx={{ marginBottom: 2 }}>
@@ -62,7 +70,8 @@ export const CurrenciesList = ({ isUsersList = false, currencies, onTrackClick, 
                     <Typography sx={{ fontWeight: 800 }}>{currency.name}</Typography>
                     <Typography>{price}</Typography>
                     <Typography
-                      style={{
+                      sx={{
+                        fontWeight: 500,
                         color: isPositive ? 'green' : 'red',
                       }}
                     >
@@ -81,6 +90,7 @@ export const CurrenciesList = ({ isUsersList = false, currencies, onTrackClick, 
 
 CurrenciesList.propTypes = {
   isUsersList: PropTypes.bool,
+  isInitialLoading: PropTypes.bool,
   currencies: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
