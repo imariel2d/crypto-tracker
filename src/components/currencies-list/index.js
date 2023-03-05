@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
+import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-// import Box from '@mui/material/Image';
 import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -11,10 +11,14 @@ import IconButton from '@mui/material/IconButton';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
-// import FolderIcon from '@mui/icons-material/Folder';
 
 
 import { images } from '../../helpers/image-finder';
+
+const formatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+});
 
 export const CurrenciesList = ({ isUsersList = false, currencies, onTrackClick, onUntrackClick }) => {
   const action = isUsersList
@@ -27,20 +31,22 @@ export const CurrenciesList = ({ isUsersList = false, currencies, onTrackClick, 
 
   if (currencies.length === 0) {
     return (
-      <p>No currencies to show</p>
+      <Typography sx={{ marginBottom: 2 }}>No currencies to show</Typography>
     )
   }
 
   return (
-    <List>
+    <List sx={{ marginBottom: 2 }}>
       {
         currencies.length > 0 && currencies.map((currency) => {
           const percentageInLast24Hours = currency.metrics.market_data.percent_change_usd_last_24_hours;
+          const price = formatter.format(currency.metrics.market_data.price_usd);
           const isPositive = percentageInLast24Hours >= 0;
 
           return (
             <ListItem
               key={currency.id}
+              sx={{ boxShadow: 2, marginBottom: 2, borderRadius: 3 }}
               secondaryAction={
                 <IconButton edge="end" onClick={() => action(currency)}>
                   <Icon />
@@ -53,7 +59,8 @@ export const CurrenciesList = ({ isUsersList = false, currencies, onTrackClick, 
               <ListItemText
                 primary={
                   <Box>
-                    <Typography>{currency.name}</Typography>
+                    <Typography sx={{ fontWeight: 800 }}>{currency.name}</Typography>
+                    <Typography>{price}</Typography>
                     <Typography
                       style={{
                         color: isPositive ? 'green' : 'red',
@@ -81,7 +88,8 @@ CurrenciesList.propTypes = {
       symbol: PropTypes.string.isRequired,
       metrics: PropTypes.shape({
         market_data: PropTypes.shape({
-          percent_change_usd_last_24_hours: PropTypes.number.isRequired
+          percent_change_usd_last_24_hours: PropTypes.number.isRequired,
+          price_usd: PropTypes.number.isRequired,
         }).isRequired
       }).isRequired,
     }),
